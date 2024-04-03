@@ -1,8 +1,8 @@
 {
   "development": {
-    "username": ,
-    "password": ,
-    "database": ,
+    "username": "postgres",
+    "password":"postgres" ,
+    "database": "Job_Portal",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },

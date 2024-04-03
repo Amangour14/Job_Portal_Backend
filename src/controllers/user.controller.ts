@@ -4,7 +4,7 @@ import { body } from "express-validator";
 import db from "../models";
 import generateToken from "../config/token.generate";
 type UserAttribute = {
-  id:number;
+  id: number;
   email: string;
   password: string;
   createdAt: string;
@@ -22,7 +22,6 @@ export const registerValidator = () => {
 const saltround = 10;
 
 const userController = () => {
-  
   const register = async (req: Request, res: Response): Promise<void> => {
     const existingUser = await db.User.findOne({
       where: { email: req.body.email },
@@ -56,66 +55,70 @@ const userController = () => {
   };
 
   const login = (req: Request, res: Response) => {
-    db.User.findOne({ where: { email: req.body.email } }).then((user:UserAttribute) => {
-      if (user === null) {
-        res.status(401).json({
-          message: "Invalid Credentials!",
-        });
-      } else {
-        bcrypt.compare(req.body.password, user.password, (err:any, result:any) => {
-          if (err) {
-            res.status(500).send({
-              message: "failed",
-              data: err,
-            });
-          }
+    db.User.findOne({ where: { email: req.body.email } }).then(
+      (user: UserAttribute) => {
+        if (user === null) {
+          res.status(401).json({
+            message: "Invalid Credentials!",
+          });
+        } else {
+          bcrypt.compare(
+            req.body.password,
+            user.password,
+            (err: any, result: any) => {
+              if (err) {
+                res.status(500).send({
+                  message: "failed",
+                  data: err,
+                });
+              }
 
-          if (result) {
-            res.status(200).send({
-             token: generateToken(req.body.email),emali:user.email ,id:user.id
-            });
-          } else {
-           res.status(500).json({
-            message:"Invalid Credential"
-           })
-          }
-        });
+              if (result) {
+                res.status(200).send({
+                  token: generateToken(req.body.email),
+                  emali: user.email,
+                  id: user.id,
+                });
+              } else {
+                res.status(500).json({
+                  message: "Invalid Credential",
+                });
+              }
+            }
+          );
+        }
       }
+    );
+  };
+
+  const getUserList = (req: Request, res: Response) => {
+    db.User.findAll().then((result: UserAttribute) => {
+      console.log(result);
+      res.status(200).json({
+        data: result,
+      });
     });
   };
 
-  const getUserList=(req:Request,res:Response)=>{
-    db.User.findAll().then((result:UserAttribute)=>{
-          console.log(result);
-            res.status(200).json({
-              data:result
-            })
-          
-    })
-  }
-
-  const findUserByEmail=async(req:Request,res:Response)=>{
-    const {email}=req.params;
-    try{
-     const user= await db.User.findOne({where:{email}});
-     if(user){
-      res.status(200).json({user});
-     }
-     else{
-      res.status(404).json({message:"User Not Found"})
-     }
+  const findUserByEmail = async (req: Request, res: Response) => {
+    const { email } = req.params;
+    try {
+      const user = await db.User.findOne({ where: { email } });
+      if (user) {
+        res.status(200).json({ user });
+      } else {
+        res.status(404).json({ message: "User Not Found" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: "Internal Server error" });
     }
-    catch(error){
-       res.status(500).json({error:"Internal Server error"})
-    }
-
-  }
+  };
 
   return {
     getUserList,
     register,
     login,
-    findUserByEmail
+    findUserByEmail,
   };
 };
 

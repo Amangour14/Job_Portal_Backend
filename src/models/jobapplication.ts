@@ -6,8 +6,7 @@ interface AppAttributes {
   resume: File;
   email:string;
   experience: Text;
-  userId: number;
-  jobId: number;
+  
 }
 module.exports = (sequelize: any, DataTypes: any) => {
   class JobApplication extends Model<AppAttributes> implements AppAttributes {
@@ -21,9 +20,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     email!: string;
     resume!: File;
     experience!: Text;
-    userId!: number;
-    jobId!: number;
-
+    
     static associate(models: any) {
       // define association here
     }
@@ -51,25 +48,6 @@ module.exports = (sequelize: any, DataTypes: any) => {
       experience: {
         type: DataTypes.TEXT,
         allowNull: false,
-      },
-      userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        references: {
-          model: "Users",
-          key: "id",
-        },
-      },
-
-      jobId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        references: {
-          model: "Jobs",
-          key: "jobId",
-        },
       },
     },
     {
