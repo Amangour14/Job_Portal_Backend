@@ -7,6 +7,10 @@ const app = express();
 app.use(cors());
 const port = process.env.Port ?? 8080;
 
+app.get("/", (req: Request, res: Response) => {
+  res.send("Hi Aman");
+});
+
 app.use(express.json());
 app.use(routes);
 
